@@ -19,7 +19,7 @@ public class Customer : MonoBehaviour
     CustomerManager manager;
     float waitTimer = 0;
     float waitTime = 3;
-    float speed = 3;
+    float speed = 15;
     float review = 3;
     float closeEnough = 0.25f;
 

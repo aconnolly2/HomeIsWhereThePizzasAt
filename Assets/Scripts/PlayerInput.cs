@@ -20,6 +20,7 @@ public class PlayerInput : MonoBehaviour
     PizzaItem heldItem = PizzaItem.None;
 
     private Rigidbody2D rb2d;
+    private Collider2D currentTarget;
 
     bool preparingPizza = false;
     bool ordering = false;
@@ -53,6 +54,14 @@ public class PlayerInput : MonoBehaviour
         chefBackward = transform.Find("PlayerBack").gameObject;
         custManager = GameObject.Find("Manager").GetComponent<CustomerManager>();
         gm = GameObject.Find("Manager").GetComponent<GameManager>();
+    }
+
+    private void Update()
+    {
+        if (Input.GetButtonDown("Jump") && currentTarget != null)
+        {
+            CheckCollision(currentTarget);
+        }
     }
 
     //FixedUpdate is called at a fixed interval and is independent of frame rate. Put physics code here.
@@ -142,24 +151,28 @@ public class PlayerInput : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if (!checkingCollision)
-        {
-            CheckCollision(other);
-        }
+        currentTarget = other;
     }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!checkingCollision)
+        currentTarget = collision;
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision == currentTarget)
         {
-            CheckCollision(collision);
+            currentTarget = null;
         }
     }
 
     public void  CheckCollision(Collider2D other)
     {
+        Debug.Log(other.gameObject.name);
         if (Input.GetButtonDown("Jump"))
         {
+            Debug.Log("Check Collision");
             checkingCollision = true;
             if (other.gameObject.name.StartsWith("Mat") && heldItem == PizzaItem.None)
             {
